@@ -1,0 +1,20 @@
+#include "stm32f3xx.h"
+//Implement a program that turns on each LED in turn. (Button is not used in this exercise)
+
+int main(void){
+
+	RCC->AHBENR |=(1UL<<18U);
+	GPIOB->MODER=0X00055000;
+
+	int led_pins[] = {1UL << 6, 1UL << 7, 1UL << 8, 1UL << 9};
+
+	while(1)
+	{
+		for(int i =0;i<4;i++)
+		{
+			GPIOB->ODR = led_pins[i];
+			for(int j =0;j<10000;j++);
+		}
+	}
+	return 0;
+}

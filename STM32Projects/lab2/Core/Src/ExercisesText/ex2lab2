@@ -1,0 +1,18 @@
+#include "stm32f3xx.h"
+//2. Change the program to turn on PB6-7 when the button is pressed and PB8-9 when the button is not pressed.
+
+int main(void){
+
+	RCC->AHBENR |=(1UL<<18U)|(1UL<<17U);
+	GPIOB->MODER=0X00055000;
+
+	while(1)
+	{
+		if ((GPIOA->IDR & 0x00000001) == 0x1) {
+		    GPIOB->ODR = 0xC0;
+		} else {
+		    GPIOB->ODR = 0x300;
+		}
+	}
+	return 0;
+}

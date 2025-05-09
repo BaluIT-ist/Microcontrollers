@@ -1,0 +1,16 @@
+09:38:58 **** Incremental Build of configuration Debug for project lab2 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F334x8 -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:10:27: error: 'IDR' undeclared (first use in this function)
+   10 |                 if((GPIOA-IDR & 0x00000001)==0x1)
+      |                           ^~~
+../Core/Src/main.c:10:27: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c:12:31: error: 'ODR' undeclared (first use in this function)
+   12 |                         GPIOB-ODR = 0x100;
+      |                               ^~~
+make: *** [Core/Src/subdir.mk:34: Core/Src/main.o] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+
+09:38:58 Build Failed. 3 errors, 0 warnings. (took 541ms)
+

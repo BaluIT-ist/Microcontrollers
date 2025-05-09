@@ -1,0 +1,23 @@
+#include "stm32f3xx.h"
+
+int main(void){
+
+	RCC->AHBENR |=(1UL<<18U)|(1UL<<17U);
+	GPIOB->MODER=0X00055000;
+
+	while(1)
+	{
+		if((GPIOA-IDR & 0x00000001)==0x1)
+		{
+			GPIOB-ODR = 0x100;
+			GPIOB-ODR = 0x200;
+			GPIOB-ODR = 0x400;
+			GPIOB-ODR = 0x800;
+		}
+		else
+		{
+			GPIOB->ODR=0x000;
+		}
+	}
+	return 0;
+}
