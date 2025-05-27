@@ -1,40 +1,64 @@
-int trig = 12;
-int echo = 13;
+// SPDX-FileCopyrightText: 2023 Carter Nelson for Adafruit Industries
+//
+// SPDX-License-Identifier: MIT
+// --------------------------------------
+// i2c_scanner
+//
+// Modified from https://playground.arduino.cc/Main/I2cScanner/
+// --------------------------------------
+
+#include <Wire.h>
+
+// Set I2C bus to use: Wire, Wire1, etc.
+#define WIRE Wire
 
 void setup() {
-  Serial.begin(9600); 
-  pinMode(trig, OUTPUT);  // Corrected from 'pinmode' to 'pinMode'
-  pinMode(echo, INPUT);   // Corrected from 'pimode' to 'pinMode'
+  WIRE.begin();
+
+  Serial.begin(9600);
+  while (!Serial)
+     delay(10);
+  Serial.println("\nI2C Scanner");
 }
+
 
 void loop() {
-  long duration, inches, cm;
+  byte error, address;
+  int nDevices;
 
-  digitalWrite(trig, LOW);
-  delayMicroseconds(2);  // Clear trigger
-  digitalWrite(trig, HIGH);
-  delayMicroseconds(10); // 10µs pulse
-  digitalWrite(trig, LOW);
+  Serial.println("Scanning...");
 
-  duration = pulseIn(echo, HIGH); // Measure echo time (microseconds)
+  nDevices = 0;
+  for(address = 1; address < 127; address++ )
+  {
+    // The i2c_scanner uses the return value of
+    // the Write.endTransmisstion to see if
+    // a device did acknowledge to the address.
+    WIRE.beginTransmission(address);
+    error = WIRE.endTransmission();
 
-  inches = microsecondsToInches(duration);
-  cm = microsecondsToCentimeters(duration); 
+    if (error == 0)
+    {
+      Serial.print("I2C device found at address 0x");
+      if (address<16)
+        Serial.print("0");
+      Serial.print(address,HEX);
+      Serial.println("  !");
 
-  Serial.print("Distance: ");
-  Serial.print(inches);
-  Serial.print(" in, ");
-  Serial.print(cm);
-  Serial.println(" cm");
+      nDevices++;
+    }
+    else if (error==4)
+    {
+      Serial.print("Unknown error at address 0x");
+      if (address<16)
+        Serial.print("0");
+      Serial.println(address,HEX);
+    }
+  }
+  if (nDevices == 0)
+    Serial.println("No I2C devices found\n");
+  else
+    Serial.println("done\n");
 
-  delay(100); // Delay between readings
-}
-
-// Helper functions (corrected)
-long microsecondsToInches(long microseconds) {
-  return microseconds / 74 / 2;  //Sound travels ~74 microseconds per inch.Divide by 2 to get only the distance of the return.
-}
-
-long microsecondsToCentimeters(long microseconds) {
-  return microseconds / 29 / 2;  // Same but Sounds travels ~ 29(or  precisely 29.1)microsecond per centimeter
+  delay(5000);           // wait 5 seconds for next scan
 }
